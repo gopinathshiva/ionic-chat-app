@@ -1,0 +1,8 @@
+/* Empty. Add your own CSS if you like */
+inputerror {
+    border-color:  red !important;
+}
+
+.popup-body {
+    padding: 10px;
+}

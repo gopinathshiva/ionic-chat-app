@@ -1,0 +1,40 @@
+<ion-nav-bar class="bar-positive" animation="nav-title-slide-ios7">
+</ion-nav-bar>
+<ion-view title="{{pageTitle}}" ng-init="showSignUp = true;
+        pageTitle = 'Sign In'">
+    <ion-content class="padding">
+        <ion-nav-buttons side="right">
+            <button ng-show="showSignUp" class="button" ng-click="onSignUp()">
+                Sign Up
+            </button>
+            <button ng-hide="showSignUp" class="button" ng-click="onSignIn()">
+                Sign In
+            </button>
+        </ion-nav-buttons>
+        <form name="loginForm" ng-submit="signIn()" novalidate>
+            <div class="list">
+                <label class="item item-input">
+                    <span class="input-label">User Email</span>
+                    <input type="email" ng-model="user.email" required>
+                </label>
+                <br>
+                <label class="item item-input">
+                    <span class="input-label">Password</span>
+                    <input name="password" type="password" ng-model="user.password" required>
+                </label>
+            </div>
+            <div class="padding">
+                <button ng-if="showSignUp" type="submit" ng-disabled="!loginForm.$valid" class="button button-block button-positive">Sign In</button>
+                <button ng-if="!showSignUp" type="button" ng-disabled="!loginForm.$valid" class="button button-block button-positive" ng-click="signUp()">Sign Up</button>
+            </div>
+        </form>
+        <div class="padding">
+            <center><input ng-click="loginProvider('google')" type="image" class='' src="./img/google_btn2.png" alt="Submit" width="50" height="48"></center>
+            <center><input ng-click="loginProvider('facebook')" type="image" class='' src="./img/fb_btn.png" alt="Submit" width="50" height="48"></center>
+        </div>
+
+
+
+    </ion-content>
+</ion-view>
+
