@@ -10,7 +10,6 @@ angular.module('starter.controllers', [])
                 $scope.showSignUp = true;
                 $scope.pageTitle = 'Sign In';
             };
-//
             $scope.auth = Auth.getFirebaseRef();
             console.log(Auth.getAuth());
 
