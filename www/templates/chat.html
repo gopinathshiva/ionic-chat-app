@@ -1,5 +1,21 @@
 <ion-view title="Chat">
     <ion-content class="padding">
-        <h1>Account</h1>
+        <div class="card" ng-repeat="message in messages">
+            <div class="item item-text-wrap">
+                <span ng-bind="message.message"></span>
+                <p style="float: right;font-size: 85%">
+                    <span ng-bind="message.timeStamp | date:'medium'"></span>
+                    <span >sent</span>
+                </p>
+            </div>
+        </div>
     </ion-content>
+    <div class="bar bar-footer" id="chatfooter" style="border:1px solid black">
+        <form name="form" novalidate>
+            <div class="title">
+                <input ng-enter="send(newMessage)" ng-model="newMessage" type="text" placeholder="Type a Message to Send..." style="width:85%" required/>
+            </div>
+            <button ng-click="send(newMessage)" class="button button-positive" ng-disabled="!form.$valid">Send</button>
+        </form>
+    </div>
 </ion-view>

@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.services'])
 
-        .run(function ($ionicPlatform, $state, $ionicLoading, Auth) {
+        .run(function ($ionicPlatform, $state, $ionicLoading, Auth, userInfo) {
             $ionicPlatform.ready(function () {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
                 // for form inputs)
@@ -21,46 +21,14 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
 
                 $ionicLoading.show();
                 if (Auth.getAuth()) {
+                    console.log("app.js getAuth() is" + JSON.stringify(Auth.getAuth()));
+                    userInfo.setUserDetail(Auth.getAuth());
                     $state.go('dashboard.chat');
                 } else {
                     $state.go('login');
                 }
 
                 $ionicLoading.hide();
-//                $ionicLoading.show();
-//                var firebaseRef = new Firebase('https://incandescent-inferno-8147.firebaseio.com/');
-//                var token = sessionStorage.getItem('authToken') || sessionStorage.getItem('accessToken');
-//                var provider = sessionStorage.getItem('provider');
-//                if (!token) {
-//                    $ionicLoading.hide();
-//                    $state.go('login');
-//                    return;
-//                }
-//                if (provider && provider.toLowerCase() !== "password") {
-//                    firebaseRef.authWithOAuthToken(provider, token, function (error, authData) {
-//                        $ionicLoading.hide();
-//                        if (error) {
-//                            console.log("Login Failed!", error);
-//                            $state.go('login');
-//                        } else {
-//                            $rootScope.userName = authData.google.displayName || authData.facebook.displayName;
-//                            $rootScope.userImageUrl = authData.google.cachedUserProfile.picture || authData.facebook.cachedUserProfile.picture;
-//                            console.log("Authenticated successfully with payload:", authData);
-//                            $state.go('dashboard.chat');
-//                        }
-//                    });
-//                } else {
-//                    firebaseRef.authWithCustomToken(token, function (error, authData) {
-//                        $ionicLoading.hide();
-//                        console.log(JSON.stringify(authData));
-//                        if (error) {
-//                            $state.go('login');
-//                        } else {
-//                            $rootScope.userName = authData.email;
-//                            $state.go('dashboard.chat');
-//                        }
-//                    });
-//                }
             });
         })
 
@@ -99,12 +67,39 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
                             }
                         }
                     })
+                    .state('dashboard.friends', {
+                        url: "/friends",
+                        views: {
+                            'menuContent': {
+                                templateUrl: "templates/friends.html",
+                                controller: "friendsController"
+                            }
+                        }
+                    })
+                    .state('dashboard.addFriend', {
+                        url: "/addFriend",
+                        views: {
+                            'menuContent': {
+                                templateUrl: "templates/addFriend.html",
+                                controller: "addFriendController"
+                            }
+                        }
+                    })
                     .state('dashboard.about', {
                         url: "/about",
                         views: {
                             'menuContent': {
-                                templateUrl: "templates/about.html",
-                                controller: "profileController"
+                                templateUrl: "templates/addFriend.html",
+                                controller: "addFriendController"
+                            }
+                        }
+                    })
+                    .state('dashboard.account', {
+                        url: "/about",
+                        views: {
+                            'menuContent': {
+                                templateUrl: "templates/account.html",
+                                controller: "accountController"
                             }
                         }
                     })
@@ -116,7 +111,7 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
                                 controller: "profileController"
                             }
                         }
-                    })
+                    });
 
             $urlRouterProvider.otherwise("/login");
         })

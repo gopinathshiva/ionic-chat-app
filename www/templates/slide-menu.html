@@ -1,10 +1,10 @@
-<ion-side-menus enable-menu-with-back-views="true">
+<ion-side-menus enable-menu-with-back-views="false" expose-aside-when="large">
 
     <ion-side-menu-content>
         <ion-nav-bar class="bar-positive">
-            <ion-nav-back-button class="button-icon">
-                {{getPreviousTitle|| ''}}
-            </ion-nav-back-button>
+            <!--            <ion-nav-back-button class="button-icon">
+                            {{getPreviousTitle|| ''}}
+                        </ion-nav-back-button>-->
 
             <ion-nav-buttons side="left">
                 <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
@@ -12,7 +12,7 @@
             </ion-nav-buttons>
 
             <ion-nav-buttons side="right">
-                <button class="button" ng-click='signOut()'>
+                <button class="button button-clear" ng-click='signOut()'>
                     Sign Out
                 </button>
             </ion-nav-buttons>
@@ -26,14 +26,22 @@
             <div>
                 <img width="40" height="35" ng-if="userImageUrl" ng-src="{{userImageUrl}}"/>
             </div>
-            <h1 class="title" ng-hide="userName">Welcome Guest</h1>
-            <h1 class="title" ng-show="userName">Welcome <span ng-bind="userName"></span></h1>
+            <div >
+                <span style="margin-left: 15%;" class="title" ng-hide="userName">Welcome Guest</span>
+                <span style="margin-left: 15%;" class="title" ng-show="userName">Welcome {{userName}}</span>
+            </div>
         </ion-header-bar>
         <ion-content>
             <ul class="list">
-                <li class="item" ng-repeat = "menu in menus" ui-sref="{{menu.url}}">{{menu.name}}</li>
+                <li class="item item-icon-left" menu-close ng-repeat = "menu in menus" ui-sref="{{menu.url}}">
+                    <i ng-class="menu.icon"></i>
+                    {{menu.name}}
+                </li>
             </ul>
         </ion-content>
+        <div class="bar bar-footer bar-positive">
+            <div class="title" ng-click="signOut()">Sign Out</div>
+        </div>
     </ion-side-menu>
 
 </ion-side-menus>
