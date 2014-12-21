@@ -20,7 +20,7 @@
                 <br>
                 <label class="item item-input">
                     <span class="input-label">Password</span>
-                    <input name="password" type="{{inputType}}" ng-model="user.password" required>
+                    <input ng-keyup="$event.keyCode == 13 && !showSignUp && signUp()" name="password" type="{{inputType}}" ng-model="user.password" required>
                 </label>
                 <br>
                 <li class="item item-checkbox">

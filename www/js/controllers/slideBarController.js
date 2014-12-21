@@ -7,18 +7,19 @@ angular.module('starter.slideBarController', [])
                 {name: "Friends", url: "dashboard.friends", icon: "icon ion-person-stalker"},
                 {name: "Add Friend", url: "dashboard.addFriend", icon: "icon ion-person-add"},
                 {name: "Profile", url: "dashboard.profile", icon: "icon ion-person"},
+                {name: "Account", url: "dashboard.account", icon: "icon ion-person-stalker"},
+                {name: "Settings", url: "dashboard.settings", icon: "icon ion-android-settings"},
                 {name: "About", url: "dashboard.about", icon: "icon ion-ionic"},
                 {name: "Contact Us", url: "dashboard.contactUs", icon: "icon ion-android-call"}
             ];
 
-            if (localStorage.getItem('provider').toLowerCase() === "password") {
-                $scope.menus.splice(2, 0, {name: "Account", url: "dashboard.account", icon: "icon ion-person-stalker"});
+            if (userInfo.picture) {
+                $scope.userImageUrl = userInfo.picture;
+                $scope.userName = userInfo.name;
+            } else {
+                $scope.userName = userInfo.email;
             }
 
-            if (userInfo.profileName) {
-                $scope.userImageUrl = userInfo.profilePicture;
-                $scope.userName = userInfo.profileName;
-            }
             $scope.signOut = function () {
                 Auth.logout();
                 localStorage.removeItem('accessToken');

@@ -135,16 +135,16 @@ app.factory('userInfo', [function () {
             setUserDetail: function (detail) {
                 userInfo.fullUserDetail = detail;
                 if (detail.provider.toLowerCase() === "google") {
-                    userInfo.profileName = detail.google.displayName;
+                    userInfo.name = detail.google.displayName;
                     userInfo.email = detail.google.email;
-                    userInfo.profilePicture = detail.google.cachedUserProfile.picture;
+                    userInfo.picture = detail.google.cachedUserProfile.picture;
                     userInfo.accessToken = detail.google.accessToken;
                     localStorage.setItem('accessToken', detail.google.accessToken);
                     localStorage.setItem('provider', "google");
                 } else if (detail.provider.toLowerCase() === "facebook") {
-                    userInfo.profileName = detail.facebook.displayName;
+                    userInfo.name = detail.facebook.displayName;
                     userInfo.email = detail.facebook.email;
-                    userInfo.profilePicture = detail.facebook.cachedUserProfile.picture.data.url;
+                    userInfo.picture = detail.facebook.cachedUserProfile.picture.data.url;
                     userInfo.accessToken = detail.facebook.accessToken;
                     localStorage.setItem('accessToken', detail.facebook.accessToken);
                     localStorage.setItem('provider', "facebook");
@@ -157,3 +157,26 @@ app.factory('userInfo', [function () {
         };
         return userInfo;
     }]);
+
+app.factory('friendService', function (Auth, $q) {
+    var user = {
+        searchUser: function (email) {
+            var defer = $q.defer();
+            var searchRef = Auth.getRef.child('users');
+            var users = [];
+            searchRef.orderByChild('email').equalTo(email).once("value", function (snapshot) {
+                if (!snapshot.val()) {
+                    defer.resolve(users);
+                    return;
+                }
+                var data = snapshot.val();
+                for (var key in data) {
+                    users.push(data[key]);
+                }
+                defer.resolve(users);
+            });
+            return defer.promise;
+        }
+    };
+    return user;
+});

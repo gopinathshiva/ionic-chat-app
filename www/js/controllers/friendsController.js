@@ -9,24 +9,24 @@ angular.module('starter.friendsController', []).controller('friendsController', 
         var homeRef = Auth.getRef;
         var friendRef = $firebase(homeRef.child("friends"));
         $scope.friends = friendRef.$asArray();
-//        $scope.friends = [
-//            {
-//                friendName: "Gopi",
-//                friendEmail: "sgopinath31@gmail.com",
-//                status: "hi",
-//                friendPicture: "./img/ionic.png"
-//            },
-//            {
-//                friendName: "",
-//                friendEmail: "",
-//                status: "",
-//                friendPicture: ""
-//            },
-//            {
-//                friendName: "",
-//                friendEmail: "",
-//                status: "",
-//                friendPicture: "./img/ionic.png"
-//            }
-//        ];
+        $scope.friends = [
+            {
+                friendName: "Gopi",
+                friendEmail: "sgopinath31@gmail.com",
+                status: "hi",
+                friendPicture: "./img/ionic.png"
+            },
+            {
+                friendName: "",
+                friendEmail: "",
+                status: "",
+                friendPicture: ""
+            },
+            {
+                friendName: "",
+                friendEmail: "",
+                status: "",
+                friendPicture: "./img/ionic.png"
+            }
+        ];
     }]);
