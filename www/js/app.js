@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'firebase', 'starter.slideBarController', 'starter.loginController', 'starter.chatController', 'starter.profileController', 'starter.friendsController', 'starter.addFriendController', 'starter.accountController', 'starter.services'])
 
         .run(function ($ionicPlatform, $state, $ionicLoading, Auth, userInfo) {
             $ionicPlatform.ready(function () {
@@ -112,7 +112,6 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
                             }
                         }
                     });
-
             $urlRouterProvider.otherwise("/login");
         })
 
