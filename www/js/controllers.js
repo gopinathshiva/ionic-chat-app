@@ -13,16 +13,20 @@ angular.module('starter.controllers', [])
                 $scope.showSignUp = true;
                 $scope.pageTitle = 'Sign In';
             };
+//
             $scope.auth = Auth.getFirebaseRef();
 
             $scope.loginProvider = function (providerName) {
-                $ionicLoading.show();
-                loginService.loginProvider(providerName).then(function (data) {
+                loginService.loginProvider(providerName, "email").then(function (data) {
+                    console.log(JSON.stringify(data));
+                    $ionicLoading.hide();
                     userInfo.setUserDetail(data);
                     Auth.getRef.child("users").child(data.uid).set(data);
                     $ionicLoading.hide();
                     $state.go('dashboard.chat');
                     console.log(JSON.stringify(data));
+                }, function (error) {
+                    $ionicLoading.hide();
                 });
             };
 
@@ -117,25 +121,28 @@ angular.module('starter.controllers', [])
             };
         })
 
-        .controller('chatController', function ($scope, $rootScope, $ionicNavBarDelegate, $firebase, $ionicLoading, Auth, userInfo) {
+        .controller('chatController', function ($scope, $ionicScrollDelegate, $firebase, $ionicLoading, Auth, userInfo) {
+
             var ref = Auth.getRef;
-//            var messageRef = $firebase(ref.child('messages'));
-//            var senderName = userInfo.profileName;
-//            $scope.messages = messageRef.$asArray();
-//
-//            $ionicLoading.show();
-//            $scope.messages.$loaded().then(function (data) {
-//                $ionicLoading.hide();
-//                console.log("messages : " + JSON.stringify($scope.messages));
-//            }, function (error) {
-//                console.log("get message service error:" + JSON.stringify(error));
-//                $ionicLoading.hide();
-//            });
+            var messageRef = $firebase(ref.child('messages'));
+            var senderName = userInfo.profileName;
+            $scope.messages = messageRef.$asArray();
+
+            $ionicLoading.show();
+            $scope.messages.$loaded().then(function (data) {
+                $ionicLoading.hide();
+                $ionicScrollDelegate.scrollBottom();
+                console.log($ionicScrollDelegate.getScrollPosition());
+                console.log("messages : " + JSON.stringify($scope.messages));
+            }, function (error) {
+                console.log("get message service error:" + JSON.stringify(error));
+                $ionicLoading.hide();
+            });
 
             $scope.send = function (message) {
                 $scope.newMessage = '';
-                var objDiv = document.getElementById("chatfooter");
-                objDiv.scrollTop = objDiv.scrollHeight;
+                $ionicScrollDelegate.scrollBottom();
+                console.log($ionicScrollDelegate.getScrollPosition());
                 var msgObj = {
                     message: message,
                     sender: senderName,

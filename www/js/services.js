@@ -99,7 +99,7 @@ app.factory("Auth", ["$firebaseAuth", function ($firebaseAuth) {
         return auth;
     }]);
 
-app.factory('loginService', ['$firebaseAuth', function ($firebaseAuth) {
+app.factory('loginService', ['$firebaseAuth', '$q', function ($firebaseAuth, $q) {
         var ref = new Firebase("https://incandescent-inferno-8147.firebaseio.com/");
         var auth = $firebaseAuth(ref);
         var authLogin = {
@@ -113,25 +113,37 @@ app.factory('loginService', ['$firebaseAuth', function ($firebaseAuth) {
                     rememberMe: true
                 });
             },
-            loginProvider: function (providerName) {
-                return auth.$authWithOAuthPopup(providerName);
+            loginProvider: function (providerName, scope) {
+                var defer = $q.defer();
+                ref.authWithOAuthPopup(providerName, function (error, authData) {
+                    if (error) {
+                        defer.reject(error);
+                    } else {
+                        defer.resolve(authData);
+                    }
+                }, {
+                    remember: "sessionOnly",
+                    scope: scope
+                });
+                return defer.promise;
             }
         };
         return authLogin;
     }]);
-
 app.factory('userInfo', [function () {
         var userInfo = {
             setUserDetail: function (detail) {
                 userInfo.fullUserDetail = detail;
                 if (detail.provider.toLowerCase() === "google") {
                     userInfo.profileName = detail.google.displayName;
+                    userInfo.email = detail.google.email;
                     userInfo.profilePicture = detail.google.cachedUserProfile.picture;
                     userInfo.accessToken = detail.google.accessToken;
                     localStorage.setItem('accessToken', detail.google.accessToken);
                     localStorage.setItem('provider', "google");
                 } else if (detail.provider.toLowerCase() === "facebook") {
                     userInfo.profileName = detail.facebook.displayName;
+                    userInfo.email = detail.facebook.email;
                     userInfo.profilePicture = detail.facebook.cachedUserProfile.picture.data.url;
                     userInfo.accessToken = detail.facebook.accessToken;
                     localStorage.setItem('accessToken', detail.facebook.accessToken);

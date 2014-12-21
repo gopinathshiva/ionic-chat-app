@@ -4,10 +4,10 @@
         pageTitle = 'Sign In'">
     <ion-content class="padding">
         <ion-nav-buttons side="right">
-            <button ng-show="showSignUp" class="button button-clear" ng-click="onSignUp()">
+            <button ng-if="showSignUp" class="button" ng-click="onSignUp()">
                 Sign Up
             </button>
-            <button ng-hide="showSignUp" class="button button-clear" ng-click="onSignIn()">
+            <button ng-if="!showSignUp" class="button" ng-click="onSignIn()">
                 Sign In
             </button>
         </ion-nav-buttons>
