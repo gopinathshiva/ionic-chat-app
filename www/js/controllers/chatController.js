@@ -6,8 +6,8 @@
 
 angular.module('starter.chatController', []).controller('chatController', function ($scope, $ionicScrollDelegate, $firebase, $ionicLoading, Auth, userInfo) {
 
-    var ref = Auth.getRef;
-    var messageRef = $firebase(ref.child('messages'));
+    var ref = Auth.getRef.child('messages');
+    var messageRef = $firebase(ref);
     var senderName = userInfo.profileName;
     $scope.messages = messageRef.$asArray();
 
@@ -15,10 +15,14 @@ angular.module('starter.chatController', []).controller('chatController', functi
     $scope.messages.$loaded().then(function (data) {
         $ionicLoading.hide();
         $ionicScrollDelegate.scrollBottom();
-        console.log("messages : " + JSON.stringify($scope.messages));
+        //console.log("messages : " + JSON.stringify($scope.messages));
     }, function (error) {
         console.log("get message service error:" + JSON.stringify(error));
         $ionicLoading.hide();
+    });
+
+    ref.on('child_added', function (dataSnapshot) {
+        $ionicScrollDelegate.scrollBottom();
     });
 
     $scope.send = function (message) {
@@ -35,11 +39,11 @@ angular.module('starter.chatController', []).controller('chatController', functi
             isReceived: false
         };
 
-        messageRef.$push(msgObj).then(function (data) {
+        $scope.messages.$add(msgObj).then(function (data) {
             console.log(data.key());
         }, function (err) {
             console.log("push message service error:" + JSON.stringify(err));
         });
     };
-})
+});
 

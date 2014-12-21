@@ -1,0 +1,19 @@
+<ion-view title="Friends">
+    <ion-content class="padding">
+        <div class="" ng-repeat="addFriend in addFriends">
+            <a class="item item-avatar" ui-sref="dashboard.chat">
+                <img ng-src="{{ addFriend.userPicture || './img/default_user.png' }}">
+                <h2 ng-bind="addFriend.userName + ' - ' + addFriend.userEmail"></h2>
+                <p ng-bind="addFriend.message"></p>
+                <div>
+                    <button ng-click="accept(addFriend)" style="width: 48.5%;" class="button button-small button-assertive">
+                        Accept
+                    </button>
+                    <button ng-click="reject(addFriend)" style="float: right;width: 48.5%;" class="button button-small button-positive">
+                        Reject
+                    </button>
+                </div>
+            </a>
+        </div>
+    </ion-content>
+</ion-view>

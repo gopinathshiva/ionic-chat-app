@@ -1,0 +1,11 @@
+<ion-view title="Friends">
+    <ion-content class="padding">
+        <div class="" ng-repeat="friend in friends">
+            <a class="item item-avatar" ui-sref="dashboard.chat">
+                <img ng-src="{{ friend.friendPicture || './img/default_user.png' }}">
+                <h2 ng-bind="friend.friendName"></h2>
+                <p ng-bind="friend.status"></p>
+            </a>
+        </div>
+    </ion-content>
+</ion-view>

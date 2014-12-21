@@ -23,13 +23,12 @@ angular.module('starter.loginController', []).controller('loginController', func
 
     $scope.loginProvider = function (providerName) {
         loginService.loginProvider(providerName, "email").then(function (data) {
-            console.log(JSON.stringify(data));
+            //console.log(JSON.stringify(data));
             $ionicLoading.hide();
             userInfo.setUserDetail(data);
             Auth.getRef.child("users").child(data.uid).set(data);
             $ionicLoading.hide();
             $state.go('dashboard.chat');
-            console.log(JSON.stringify(data));
         }, function (error) {
             $ionicLoading.hide();
         });

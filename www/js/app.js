@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'firebase', 'starter.slideBarController', 'starter.loginController', 'starter.chatController', 'starter.profileController', 'starter.friendsController', 'starter.addFriendController', 'starter.accountController', 'starter.services'])
 
-        .run(function ($ionicPlatform, $state, $ionicLoading, Auth, userInfo) {
+        .run(function ($ionicPlatform, $state, $ionicLoading, $templateCache, Auth, userInfo) {
             $ionicPlatform.ready(function () {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
                 // for form inputs)
@@ -95,7 +95,7 @@ angular.module('starter', ['ionic', 'firebase', 'starter.slideBarController', 's
                         }
                     })
                     .state('dashboard.account', {
-                        url: "/about",
+                        url: "/account",
                         views: {
                             'menuContent': {
                                 templateUrl: "templates/account.html",
@@ -116,7 +116,8 @@ angular.module('starter', ['ionic', 'firebase', 'starter.slideBarController', 's
         })
 
         .constant('$ionicLoadingConfig', {
-            template: 'Loading Please Wait ...'
+            template: 'Loading Please Wait',
+            duration: 8000
         });
 ;
 
