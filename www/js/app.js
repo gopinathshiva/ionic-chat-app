@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'firebase', 'starter.slideBarController', 'starter.loginController', 'starter.chatController', 'starter.profileController', 'starter.friendsController', 'starter.addFriendController', 'starter.accountController', 'starter.aboutController', 'starter.services'])
+angular.module('starter', ['ionic', 'firebase', 'starter.slideBarController', 'starter.loginController', 'starter.chatController', 'starter.profileController', 'starter.friendsController', 'starter.addFriendController', 'starter.accountController', 'starter.aboutController', 'starter.services', 'filters'])
 
         .run(function ($ionicPlatform, $state, $ionicLoading, $templateCache, Auth, userInfo) {
             $ionicPlatform.ready(function () {
@@ -117,7 +117,7 @@ angular.module('starter', ['ionic', 'firebase', 'starter.slideBarController', 's
 
         .constant('$ionicLoadingConfig', {
             template: 'Loading Please Wait',
-            duration: 8000
+            duration: 15000
         });
 ;
 

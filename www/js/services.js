@@ -140,17 +140,14 @@ app.factory('userInfo', [function () {
                     userInfo.picture = detail.google.cachedUserProfile.picture;
                     userInfo.accessToken = detail.google.accessToken;
                     localStorage.setItem('accessToken', detail.google.accessToken);
-                    localStorage.setItem('provider', "google");
                 } else if (detail.provider.toLowerCase() === "facebook") {
                     userInfo.name = detail.facebook.displayName;
                     userInfo.email = detail.facebook.email;
                     userInfo.picture = detail.facebook.cachedUserProfile.picture.data.url;
                     userInfo.accessToken = detail.facebook.accessToken;
                     localStorage.setItem('accessToken', detail.facebook.accessToken);
-                    localStorage.setItem('provider', "facebook");
-                } else {
-                    localStorage.setItem('provider', "password");
                 }
+                localStorage.setItem('provider', detail.provider);
                 userInfo.authToken = detail.token;
                 localStorage.setItem('authToken', detail.token);
             }
@@ -171,8 +168,10 @@ app.factory('friendService', function (Auth, $q) {
                 }
                 var data = snapshot.val();
                 for (var key in data) {
+                    data[key].uid = key;
                     users.push(data[key]);
                 }
+                console.log(JSON.stringify(users));
                 defer.resolve(users);
             });
             return defer.promise;

@@ -39,7 +39,7 @@
                 <img ng-src="{{ searchFriend.picture || './img/default_user.png' }}">
                 <h2 ng-bind="searchFriend.name + ' - ' + searchFriend.email"></h2>
                 <p ng-bind="searchFriend.status"></p>
-                <div>
+                <div ng-hide="currentUID===searchFriend.uid">
                     <button ng-click="sendRequest(searchFriend)" style="width: 48.5%;" class="button button-small button-assertive">
                         Send Request
                     </button>

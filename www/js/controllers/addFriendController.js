@@ -5,10 +5,14 @@
  */
 
 
-angular.module('starter.addFriendController', []).controller('addFriendController', function ($scope, $firebase, $ionicModal, $ionicPopup, Auth, friendService, $ionicLoading) {
+angular.module('starter.addFriendController', []).controller('addFriendController', function ($scope, $firebase, $ionicModal, $ionicPopup, Auth, friendService, $ionicLoading, userInfo) {
     var homeRef = Auth.getRef;
-    var addFriendRef = $firebase(homeRef.child("addFriend"));
-    $scope.addFriends = addFriendRef.$asArray();
+    var addFriendRef = homeRef.child("addFriend");
+
+    $scope.currentUID = userInfo.fullUserDetail.uid;
+    var currentProvider = userInfo.fullUserDetail.provider;
+
+//    $scope.addFriends = addFriendRef.$asArray();
     $scope.addFriends = [
         {
             userName: "Gopi",
@@ -79,11 +83,16 @@ angular.module('starter.addFriendController', []).controller('addFriendControlle
         });
     };
 
-    $scope.sendRequest = function () {
-        console.log("send request clicked");
+    $scope.sendRequest = function (user) {
+        var reqObj = {userID: user.uid};
+        $ionicLoading.show();
+        addFriendRef.child($scope.currentUID).push(reqObj, function () {
+            $ionicLoading.hide();
+        });
+        console.log("current user id:" + $scope.currentUID + "with provider:" + currentProvider + " is sending request to " + user.uid);
     };
 
-    $scope.blockUser = function () {
-        console.log("blockUser clicked");
+    $scope.blockUser = function (user) {
+        console.log("current user id:" + $scope.currentUID + "with provider:" + currentProvider + " is blocking " + user.uid);
     };
 });

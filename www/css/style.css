@@ -1,8 +1,11 @@
 /* Empty. Add your own CSS if you like */
-inputerror {
-    border-color:  red !important;
+
+.bar{
+    height: 49px;
 }
 
-.popup-body {
-    padding: 10px;
+.sidebarheaderalign .title{
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
 }

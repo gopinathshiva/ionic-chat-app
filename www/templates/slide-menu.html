@@ -1,6 +1,6 @@
 <ion-side-menus enable-menu-with-back-views="false" expose-aside-when="large">
 
-    <ion-side-menu-content>
+    <ion-side-menu-content >
         <ion-nav-bar class="bar-positive">
             <!--            <ion-nav-back-button class="button-icon">
                             {{getPreviousTitle|| ''}}
@@ -18,17 +18,17 @@
             </ion-nav-buttons>
         </ion-nav-bar>
 
-        <ion-nav-view name="menuContent"></ion-nav-view>
+        <ion-nav-view name="menuContent" animation=null></ion-nav-view>
     </ion-side-menu-content>
 
     <ion-side-menu side="left">
-        <ion-header-bar class="bar-assertive">
+        <ion-header-bar class="bar-assertive" id="sidebarheaderalign">
             <div>
-                <img width="40" height="35" ng-if="userImageUrl" ng-src="{{userImageUrl}}"/>
+                <img width="47" height="39" ng-if="userImageUrl" ng-src="{{userImageUrl}}"/>
             </div>
             <div >
-                <span style="margin-left: 15%;" class="title" ng-hide="userName">Welcome Guest</span>
-                <span style="margin-left: 15%;" class="title" ng-show="userName">Welcome {{userName}}</span>
+                <span class="title" ng-hide="userName">Welcome Guest</span>
+                <span class="title" ng-show="userName">{{userName| capitalize:true}}</span>
             </div>
         </ion-header-bar>
         <ion-content>
