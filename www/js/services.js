@@ -175,6 +175,30 @@ app.factory('friendService', function (Auth, $q) {
                 defer.resolve(users);
             });
             return defer.promise;
+        },
+        getAddFriendsService: function (uid) {
+            var defer = $q.defer();
+            var getAddFriendRef = Auth.getRef.child("addFriends");
+            getAddFriendRef.orderByChild(uid).equalTo(uid).on('value', function (snapshot) {
+                var getAddFriendsList = [];
+                if (!snapshot.val()) {
+                    defer.resolve(getAddFriendsList);
+                    return;
+                }
+                var data = snapshot.val();
+
+                console.log(JSON.stringify(getAddFriendsList));
+                defer.resolve(getAddFriendsList);
+            });
+            return defer.promise;
+        },
+        sendFriendRequest: function (userID, requestID) {
+            var defer = $q.defer();
+            var getAddFriendRef = Auth.getRef.child("addFriends");
+            var reqObj = {uid: userID};
+            var ids = getAddFriendRef.child(requestID).push(reqObj);
+            defer.resolve(ids.key());
+            return defer.promise;
         }
     };
     return user;

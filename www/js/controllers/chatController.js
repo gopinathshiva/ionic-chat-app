@@ -8,11 +8,10 @@ angular.module('starter.chatController', []).controller('chatController', functi
 
     var ref = Auth.getRef.child('messages');
     var messageRef = $firebase(ref);
-    var senderName = userInfo.profileName;
     $scope.messages = messageRef.$asArray();
 
     $ionicLoading.show();
-    $scope.messages.$loaded().then(function (data) {
+    $scope.messages.$loaded().then(function () {
         $ionicLoading.hide();
         $ionicScrollDelegate.scrollBottom();
         //console.log("messages : " + JSON.stringify($scope.messages));
@@ -21,17 +20,17 @@ angular.module('starter.chatController', []).controller('chatController', functi
         $ionicLoading.hide();
     });
 
-    ref.on('child_added', function (dataSnapshot) {
+    ref.on('child_added', function () {
         $ionicScrollDelegate.scrollBottom();
     });
 
     $scope.send = function (message) {
         $scope.newMessage = '';
         $ionicScrollDelegate.scrollBottom();
+
         var msgObj = {
             message: message,
             sender: userInfo.email,
-            senderName: senderName,
             receiver: "Shiva",
             timeStamp: new Date().getTime(),
             isRead: false,

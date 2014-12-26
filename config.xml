@@ -1,19 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.ionicframework.myionicapp757445" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>myIonicApp</name>
-  <description>
-        An Ionic Framework and Cordova project.
+    <name>4Saran</name>
+    <description>
+        A Chat app using Ionic Framework and Cordova project.
     </description>
-  <author email="hi@ionicframework" href="http://ionicframework.com/">
-      Ionic Framework Team
+    <author email="sgopinath31@gmail.com">
+        Ionic Framework Team
     </author>
-  <content src="index.html"/>
-  <access origin="*"/>
-  <preference name="webviewbounce" value="false"/>
-  <preference name="UIWebViewBounce" value="false"/>
-  <preference name="DisallowOverscroll" value="true"/>
-  <preference name="BackupWebStorage" value="none"/>
-  <feature name="StatusBar">
-    <param name="ios-package" value="CDVStatusBar" onload="true"/>
-  </feature>
+    <preference name="SplashScreen" value="screen" />
+    <preference name="SplashScreenDelay" value="3000" />
+    <platform name="android">
+        <icon src="icons/android/icons/drawable-ldpi/Icon.png" density="ldpi" />
+        <icon src="icons/android/icons/drawable-mdpi/Icon.png" density="mdpi" />
+        <icon src="icons/android/icons/drawable-hdpi/Icon.png" density="hdpi" />
+        <icon src="icons/android/icons/drawable-xhdpi/Icon.png" density="xhdpi" />
+    </platform>
+    <platform name="android">
+        <!-- you can use any density that exists in the Android project -->
+        <splash src="icons/android/splashscreen/drawable-hdpi/splash.png" density="port-hdpi"/>
+        <splash src="icons/android/splashscreen/drawable-ldpi/splash.png" density="port-ldpi"/>
+        <splash src="icons/android/splashscreen/drawable-mdpi/splash.png" density="port-mdpi"/>
+        <splash src="icons/android/splashscreen/drawable-xhdpi/splash.png" density="port-xhdpi"/>
+    </platform>
+    <content src="index.html"/>
+    <access origin="*"/>
+    <preference name="webviewbounce" value="false"/>
+    <preference name="UIWebViewBounce" value="false"/>
+    <preference name="DisallowOverscroll" value="true"/>
+    <preference name="BackupWebStorage" value="none"/>
+    <feature name="StatusBar">
+        <param name="ios-package" value="CDVStatusBar" onload="true"/>
+    </feature>
 </widget>

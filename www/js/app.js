@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'firebase', 'starter.slideBarController', 'starter.loginController', 'starter.chatController', 'starter.profileController', 'starter.friendsController', 'starter.addFriendController', 'starter.accountController', 'starter.aboutController', 'starter.services', 'filters'])
 
-        .run(function ($ionicPlatform, $state, $ionicLoading, $templateCache, Auth, userInfo) {
+        .run(function ($ionicPlatform, $state, $ionicLoading, Auth, userInfo) {
             $ionicPlatform.ready(function () {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
                 // for form inputs)
@@ -17,6 +17,12 @@ angular.module('starter', ['ionic', 'firebase', 'starter.slideBarController', 's
                 if (window.StatusBar) {
                     // org.apache.cordova.statusbar required
                     StatusBar.styleDefault();
+                }
+
+                try {
+                    navigator.splashscreen.hide();
+                } catch (e) {
+
                 }
 
                 $ionicLoading.show();

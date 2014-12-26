@@ -30,8 +30,6 @@ angular.module('starter.loginController', []).controller('loginController', func
 
     $scope.loginProvider = function (providerName) {
         loginService.loginProvider(providerName, "email").then(function (data) {
-            //console.log(JSON.stringify(data));
-            $ionicLoading.hide();
             userInfo.setUserDetail(data);
             if (data.provider.toLowerCase() === "google") {
                 userObj.email = data.google.email;
@@ -45,12 +43,12 @@ angular.module('starter.loginController', []).controller('loginController', func
                 userObj.name = data.facebook.displayName;
                 userObj.picture = data.facebook.cachedUserProfile.picture.data.url;
                 userObj.gender = data.facebook.cachedUserProfile.gender;
-                userObj.provider = data.facebook;
+                userObj.provider = data.provider;
             }
             createUser(data.uid, userObj);
             $ionicLoading.hide();
             $state.go('dashboard.chat');
-        }, function (error) {
+        }, function () {
             $ionicLoading.hide();
         });
     };

@@ -1,4 +1,4 @@
-<ion-view title="Friends">
+<ion-view title="Add Friends">
     <ion-content class="padding">
         <div class="list list-inset">
             <form novalidate name="searchForm">
@@ -34,26 +34,26 @@
     </div>
     </ion-header-bar>
     <ion-content>
-        <div ng-repeat="searchFriend in searchFriends">
-            <a class="item item-avatar">
-                <img ng-src="{{ searchFriend.picture || './img/default_user.png' }}">
-                <h2 ng-bind="searchFriend.name + ' - ' + searchFriend.email"></h2>
-                <p ng-bind="searchFriend.status"></p>
-                <div ng-hide="currentUID===searchFriend.uid">
-                    <button ng-click="sendRequest(searchFriend)" style="width: 48.5%;" class="button button-small button-assertive">
-                        Send Request
-                    </button>
-                    <button ng-click="blockUser(searchFriend)" style="float: right;width: 48.5%;" class="button button-small button-positive">
-                        Block User
-                    </button>
-                </div>
-            </a>
-        </div>
-        <div class="card" ng-if="searchFriends.length==0">
-          <div class="item item-text-wrap">
-            <center>No results found for {{searchedUser}}</center>
-          </div>
-        </div>
+    <div ng-repeat="searchFriend in searchFriends">
+    <a class="item item-avatar">
+    <img ng-src="{{ searchFriend.picture || './img/default_user.png' }}">
+    <h2 ng-bind="searchFriend.name + ' - ' + searchFriend.provider"></h2>
+    <p ng-bind="searchFriend.status"></p>
+    <div ng-hide="currentUID===searchFriend.uid">
+    <button ng-click="sendRequest(searchFriend,$index)" style="width: 48.5%;" class="button button-small button-assertive">
+    Send Request
+    </button>
+    <button ng-click="blockUser(searchFriend,$index)" style="float: right;width: 48.5%;" class="button button-small button-positive">
+    Block User
+    </button>
+    </div>
+    </a>
+    </div>
+    <div class="card" ng-if="searchFriends.length==0">
+    <div class="item item-text-wrap">
+    <center>No results found for {{searchedUser}}</center>
+    </div>
+    </div>
     </ion-content>
     </ion-modal-view>
 </script>

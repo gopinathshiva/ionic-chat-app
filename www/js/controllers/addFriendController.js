@@ -6,33 +6,52 @@
 
 
 angular.module('starter.addFriendController', []).controller('addFriendController', function ($scope, $firebase, $ionicModal, $ionicPopup, Auth, friendService, $ionicLoading, userInfo) {
-    var homeRef = Auth.getRef;
-    var addFriendRef = homeRef.child("addFriend");
+    $ionicLoading.show();
 
     $scope.currentUID = userInfo.fullUserDetail.uid;
     var currentProvider = userInfo.fullUserDetail.provider;
+    console.log("current uid:" + $scope.currentUID);
 
+    friendService.getAddFriendsService($scope.currentUID).then(function (data) {
+        $scope.addFriends = data;
+        $ionicLoading.hide();
+    }, function (err) {
+        console.log("search user service error:" + JSON.stringify(err));
+        $ionicLoading.hide();
+    });
+
+//    var homeRef = Auth.getRef;
+//    var addFriendRef = homeRef.child("addFriends");
+//
+//    addFriendRef = $firebase(addFriendRef);
 //    $scope.addFriends = addFriendRef.$asArray();
-    $scope.addFriends = [
-        {
-            userName: "Gopi",
-            userEmail: "sgopinath31@gmail.com",
-            userPicture: "./img/ionic.png",
-            message: "hey"
-        },
-        {
-            userName: "",
-            userEmail: "",
-            userPicture: "",
-            message: ""
-        },
-        {
-            userName: "",
-            userEmail: "",
-            userPicture: "./img/ionic.png",
-            message: ""
-        }
-    ];
+//    $scope.addFriends.$loaded().then(function () {
+//        $ionicLoading.hide();
+//    }, function (err) {
+//        $ionicLoading.hide();
+//    });
+
+
+//    $scope.addFriends = [
+//        {
+//            userName: "Gopi",
+//            userEmail: "sgopinath31@gmail.com",
+//            userPicture: "./img/ionic.png",
+//            message: "hey"
+//        },
+//        {
+//            userName: "",
+//            userEmail: "",
+//            userPicture: "",
+//            message: ""
+//        },
+//        {
+//            userName: "",
+//            userEmail: "",
+//            userPicture: "./img/ionic.png",
+//            message: ""
+//        }
+//    ];
 
     $ionicModal.fromTemplateUrl('my-modal.html', {
         scope: $scope,
@@ -83,16 +102,22 @@ angular.module('starter.addFriendController', []).controller('addFriendControlle
         });
     };
 
-    $scope.sendRequest = function (user) {
-        var reqObj = {userID: user.uid};
+    $scope.sendRequest = function (user, idx) {
         $ionicLoading.show();
-        addFriendRef.child($scope.currentUID).push(reqObj, function () {
+        friendService.sendFriendRequest($scope.currentUID, user.uid).then(function (data) {
+            if (data) {
+                $scope.searchFriends.splice(idx, 1);
+            }
+            $ionicLoading.hide();
+        }, function (err) {
+            console.log("send request service error:" + JSON.stringify(err));
             $ionicLoading.hide();
         });
         console.log("current user id:" + $scope.currentUID + "with provider:" + currentProvider + " is sending request to " + user.uid);
     };
 
-    $scope.blockUser = function (user) {
+    $scope.blockUser = function (user, idx) {
+        $scope.searchFriends.splice(idx, 1);
         console.log("current user id:" + $scope.currentUID + "with provider:" + currentProvider + " is blocking " + user.uid);
     };
 });
