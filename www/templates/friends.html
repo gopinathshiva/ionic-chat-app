@@ -2,9 +2,10 @@
     <ion-content class="padding">
         <div class="" ng-repeat="friend in friends">
             <a class="item item-avatar" ui-sref="dashboard.chat">
-                <img ng-src="{{ friend.friendPicture || './img/default_user.png' }}">
-                <h2 ng-bind="friend.friendName"></h2>
-                <p ng-bind="friend.status"></p>
+                <img ng-src="{{ friend.picture || './img/default_user.png' }}">
+                <h2 class="capitalize" ng-bind="friend.name + ' - ' + friend.provider + ' user'"></h2>
+                <p ng-if="friend.status" ng-bind="friend.status"></p>
+                <p ng-if="!friend.status">Hello!!!</p>
             </a>
         </div>
     </ion-content>

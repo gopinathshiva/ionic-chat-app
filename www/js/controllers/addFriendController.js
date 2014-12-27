@@ -12,13 +12,35 @@ angular.module('starter.addFriendController', []).controller('addFriendControlle
     var currentProvider = userInfo.fullUserDetail.provider;
     console.log("current uid:" + $scope.currentUID);
 
+    var addFriends = [];
     friendService.getAddFriendsService($scope.currentUID).then(function (data) {
-        $scope.addFriends = data;
-        $ionicLoading.hide();
+        addFriends = data;
+        addFriends.$loaded().then(function (data) {
+            console.log(data, addFriends);
+            var uids = [];
+            for (var i = 0; i < addFriends.length; i++) {
+                uids.push(addFriends[i].uid);
+            }
+            friendService.getUserDetail(uids).then(function (data) {
+                console.log(data, $scope.addFriends);
+                $scope.addFriends = data;
+                $ionicLoading.hide();
+            }, function (error) {
+                $ionicLoading.hide();
+                console.log("get user detail service error:" + JSON.stringify(error));
+            });
+
+            //console.log("messages : " + JSON.stringify($scope.messages));
+        }, function (error) {
+            console.log("get add friends service error:" + JSON.stringify(error));
+            $ionicLoading.hide();
+        });
+
     }, function (err) {
         console.log("search user service error:" + JSON.stringify(err));
         $ionicLoading.hide();
     });
+
 
 //    var homeRef = Auth.getRef;
 //    var addFriendRef = homeRef.child("addFriends");
@@ -80,22 +102,29 @@ angular.module('starter.addFriendController', []).controller('addFriendControlle
         });
     };
 
-    $scope.accept = function (user) {
-//        var friendsRef = $firebase(homeRef.child("friends"));
-//        friendsRef.child(user.userEmail).push(user);
+    $scope.accept = function (user, idx) {
+        $ionicLoading.show();
+        friendService.addUser($scope.currentUID, user.uid).then(function (data) {
+            callRemoveUserFunction(user, idx);
+        });
     };
 
+    function callRemoveUserFunction(user, idx) {
+        $ionicLoading.show();
+        friendService.removeUser($scope.currentUID, user.uid).then(function (data) {
+            $scope.addFriends.splice(idx, 1);
+            $ionicLoading.hide();
+        });
+    }
 
-    $scope.reject = function (user) {
+    $scope.reject = function (user, idx) {
         var confirmPopup = $ionicPopup.confirm({
             title: 'Please Confirm once',
             template: 'Are you sure you want to reject this user?'
         });
         confirmPopup.then(function (res) {
             if (res) {
-//                $scope.addFriends.$remove(user.userEmail).then(function (ref) {
-//                    ref.key() === user.userEmail; // true
-//                });
+                callRemoveUserFunction(user, idx);
             } else {
                 console.log('You are not sure');
             }

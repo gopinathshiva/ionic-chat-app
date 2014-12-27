@@ -5,28 +5,43 @@
  */
 
 
-angular.module('starter.friendsController', []).controller('friendsController', ['$scope', 'Auth', '$firebase', function ($scope, Auth, $firebase) {
+angular.module('starter.friendsController', []).controller('friendsController', ['$scope', 'Auth', '$firebase', '$ionicLoading', 'friendService', 'userInfo', function ($scope, Auth, $firebase, $ionicLoading, friendService, userInfo) {
+        $ionicLoading.show();
         var homeRef = Auth.getRef;
-        var friendRef = $firebase(homeRef.child("friends"));
-        $scope.friends = friendRef.$asArray();
-        $scope.friends = [
-            {
-                friendName: "Gopi",
-                friendEmail: "sgopinath31@gmail.com",
-                status: "hi",
-                friendPicture: "./img/ionic.png"
-            },
-            {
-                friendName: "",
-                friendEmail: "",
-                status: "",
-                friendPicture: ""
-            },
-            {
-                friendName: "",
-                friendEmail: "",
-                status: "",
-                friendPicture: "./img/ionic.png"
+        var friendRef = $firebase(homeRef.child("friends/" + userInfo.fullUserDetail.uid));
+        var friends = friendRef.$asArray();
+        friends.$loaded().then(function () {
+            var uids = [];
+            for (var i = 0; i < friends.length; i++) {
+                uids.push(friends[i].uid);
             }
-        ];
+            friendService.getUserDetail(uids).then(function (data) {
+                $scope.friends = data;
+                $ionicLoading.hide();
+            }, function (error) {
+                $ionicLoading.hide();
+                console.log("get user detail service error:" + JSON.stringify(error));
+            });
+        });
+
+//        $scope.friends = [
+//            {
+//                friendName: "Gopi",
+//                friendEmail: "sgopinath31@gmail.com",
+//                status: "hi",
+//                friendPicture: "./img/ionic.png"
+//            },
+//            {
+//                friendName: "",
+//                friendEmail: "",
+//                status: "",
+//                friendPicture: ""
+//            },
+//            {
+//                friendName: "",
+//                friendEmail: "",
+//                status: "",
+//                friendPicture: "./img/ionic.png"
+//            }
+//        ];
     }]);

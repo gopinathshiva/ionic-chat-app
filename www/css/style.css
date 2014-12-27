@@ -13,3 +13,11 @@
 .bar .title{
     top:3px;
 }
+
+.card, .list-inset {
+    overflow: visible !important;
+}
+
+.capitalize{
+    text-transform: capitalize;
+}

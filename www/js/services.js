@@ -139,12 +139,14 @@ app.factory('userInfo', [function () {
                     userInfo.email = detail.google.email;
                     userInfo.picture = detail.google.cachedUserProfile.picture;
                     userInfo.accessToken = detail.google.accessToken;
+                    userInfo.uid = detail.uid;
                     localStorage.setItem('accessToken', detail.google.accessToken);
                 } else if (detail.provider.toLowerCase() === "facebook") {
                     userInfo.name = detail.facebook.displayName;
                     userInfo.email = detail.facebook.email;
                     userInfo.picture = detail.facebook.cachedUserProfile.picture.data.url;
                     userInfo.accessToken = detail.facebook.accessToken;
+                    userInfo.uid = detail.uid;
                     localStorage.setItem('accessToken', detail.facebook.accessToken);
                 }
                 localStorage.setItem('provider', detail.provider);
@@ -155,7 +157,7 @@ app.factory('userInfo', [function () {
         return userInfo;
     }]);
 
-app.factory('friendService', function (Auth, $q) {
+app.factory('friendService', function (Auth, $q, $firebase) {
     var user = {
         searchUser: function (email) {
             var defer = $q.defer();
@@ -178,18 +180,9 @@ app.factory('friendService', function (Auth, $q) {
         },
         getAddFriendsService: function (uid) {
             var defer = $q.defer();
-            var getAddFriendRef = Auth.getRef.child("addFriends");
-            getAddFriendRef.orderByChild(uid).equalTo(uid).on('value', function (snapshot) {
-                var getAddFriendsList = [];
-                if (!snapshot.val()) {
-                    defer.resolve(getAddFriendsList);
-                    return;
-                }
-                var data = snapshot.val();
-
-                console.log(JSON.stringify(getAddFriendsList));
-                defer.resolve(getAddFriendsList);
-            });
+            var getAddFriendRef = Auth.getRef.child("addFriends/" + uid);
+            var getAddFriendRef = $firebase(getAddFriendRef);
+            defer.resolve(getAddFriendRef.$asArray());
             return defer.promise;
         },
         sendFriendRequest: function (userID, requestID) {
@@ -198,6 +191,45 @@ app.factory('friendService', function (Auth, $q) {
             var reqObj = {uid: userID};
             var ids = getAddFriendRef.child(requestID).push(reqObj);
             defer.resolve(ids.key());
+            return defer.promise;
+        },
+        getUserDetail: function (uids) {
+            var defers = [];
+            for (var i = 0; i < uids.length; i++) {
+                defers[i] = getUser(uids[i]);
+            }
+            function getUser(uid) {
+                var defer = $q.defer();
+                var getAddFriendRef = Auth.getRef.child("users/" + uid);
+                getAddFriendRef = $firebase(getAddFriendRef).$asObject();
+                getAddFriendRef.$loaded().then(function (data) {
+                    defer.resolve(data);
+                });
+                return defer.promise;
+            }
+            return $q.all(defers);
+        },
+        addUser: function (currentID, requestedID) {
+            var defer = $q.defer();
+            var getAddFriendRef = Auth.getRef.child("friends/" + currentID);
+            var obj = {uid: requestedID};
+            var addUser = getAddFriendRef.push(obj);
+            defer.resolve(addUser.key());
+            return defer.promise;
+        },
+        removeUser: function (currentID, requestedID) {
+            var defer = $q.defer();
+            var getAddFriendRef = Auth.getRef.child("addFriends/" + currentID);
+            getAddFriendRef.orderByChild('uid').equalTo(requestedID).once("value", function (snapshot) {
+                var pushId = '';
+                for (var propName in snapshot.val()) {
+                    pushId = propName;
+                    break;
+                }
+                Auth.getRef.child("addFriends/" + currentID + "/" + pushId).remove(function (data) {
+                    defer.resolve(data);
+                });
+            });
             return defer.promise;
         }
     };

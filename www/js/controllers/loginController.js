@@ -30,6 +30,7 @@ angular.module('starter.loginController', []).controller('loginController', func
 
     $scope.loginProvider = function (providerName) {
         loginService.loginProvider(providerName, "email").then(function (data) {
+            $ionicLoading.show();
             userInfo.setUserDetail(data);
             if (data.provider.toLowerCase() === "google") {
                 userObj.email = data.google.email;
@@ -37,7 +38,6 @@ angular.module('starter.loginController', []).controller('loginController', func
                 userObj.picture = data.google.cachedUserProfile.picture;
                 userObj.gender = data.google.cachedUserProfile.gender;
                 userObj.provider = data.provider;
-
             } else if (data.provider.toLowerCase() === "facebook") {
                 userObj.email = data.facebook.email;
                 userObj.name = data.facebook.displayName;
@@ -45,6 +45,7 @@ angular.module('starter.loginController', []).controller('loginController', func
                 userObj.gender = data.facebook.cachedUserProfile.gender;
                 userObj.provider = data.provider;
             }
+            userObj.uid = data.uid;
             createUser(data.uid, userObj);
             $ionicLoading.hide();
             $state.go('dashboard.chat');
@@ -83,14 +84,18 @@ angular.module('starter.loginController', []).controller('loginController', func
         loginService.customLogin($scope.user.email, $scope.user.password).then(function (data) {
             if (isNewUser) {
                 isNewUser = false;
+                userObj.name = "";
+                userObj.picture = "";
+                userObj.gender = "";
+                userObj.email = data.password.email;
+                userObj.provider = "password";
+                userObj.uid = data.uid;
+                createUser(data.uid, userObj);
                 $ionicPopup.alert({
                     title: 'Registration Success',
                     template: 'Welcome ' + $scope.user.email
                 });
             }
-            userObj.email = data.password.email;
-            userObj.provider = "password";
-            createUser(data.uid, userObj);
             userInfo.setUserDetail(data);
             $ionicLoading.hide();
             $state.go('dashboard.chat');
@@ -124,4 +129,4 @@ angular.module('starter.loginController', []).controller('loginController', func
             template: template
         });
     }
-})
+});

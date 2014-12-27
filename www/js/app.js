@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'firebase', 'starter.slideBarController', 'starter.loginController', 'starter.chatController', 'starter.profileController', 'starter.friendsController', 'starter.addFriendController', 'starter.accountController', 'starter.aboutController', 'starter.services', 'filters'])
+angular.module('starter', ['ionic', 'firebase', 'starter.slideBarController', 'starter.loginController', 'starter.chatController', 'starter.profileController', 'starter.friendsController', 'starter.addFriendController', 'starter.accountController', 'starter.aboutController', 'starter.settingsController', 'starter.services', 'filters', 'appConstants'])
 
         .run(function ($ionicPlatform, $state, $ionicLoading, Auth, userInfo) {
             $ionicPlatform.ready(function () {
@@ -97,6 +97,15 @@ angular.module('starter', ['ionic', 'firebase', 'starter.slideBarController', 's
                             'menuContent': {
                                 templateUrl: "templates/about.html",
                                 controller: "aboutController"
+                            }
+                        }
+                    })
+                    .state('dashboard.settings', {
+                        url: "/account",
+                        views: {
+                            'menuContent': {
+                                templateUrl: "templates/settings.html",
+                                controller: "settingsController"
                             }
                         }
                     })
