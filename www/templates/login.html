@@ -19,7 +19,7 @@
                 </label>
                 <br>
                 <label class="item item-input">
-                    <span class="input-label">Password</span>
+                    <span class="input-label">Password{{inputType}}</span>
                     <input ng-keyup="$event.keyCode == 13 && !showSignUp && signUp()" name="password" type="{{inputType}}" ng-model="user.password" required>
                 </label>
                 <br>

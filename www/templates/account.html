@@ -4,24 +4,95 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-<ion-view title="Account" class="has-tabs-top">
-    <ion-content class="padding">
-        <div class="tabs-striped tabs-top tabs-background-positive tabs-color-light">
-            <div class="tabs">
-                <a class="tab-item active" href="javascript:void(0)">
-                    <i class="icon ion-home"></i>
-                    Test
-                </a>
-                <a class="tab-item" href="javascript:void(0)">
-                    <i class="icon ion-star"></i>
-                    Favorites
-                </a>
-                <a class="tab-item" href="javascript:void(0)">
-                    <i class="icon ion-gear-a"></i>
-                    Settings
-                </a>
+<ion-view title="Account">
+    <ion-tabs class="tabs-striped tabs-top tabs-background-positive tabs-color-light tabs-icon-only top49px">
+
+        <ion-tab title="Home" icon-on="ion-ios7-filing" icon-off="ion-ios7-filing-outline">
+            <!-- Tab 1 content -->
+            <ion-content class="padding top0px" >
+                <div class="list top47px" ng-init="showChangeEmail = false;
+                        showChangePassword = false;">
+
+                    <div class="item item-divider">
+                        Account
+                    </div>
+
+                    <a ng-click="showChangeEmail = !showChangeEmail;
+                        showChangePassword = false;" class="item" href="javascript:void(0)">
+                        Change Email
+                    </a>
+                    <div ng-show="showChangeEmail" class="list list-inset">
+                        <label class="item item-input item-stacked-label">
+                            <span class="input-label">New Email</span>
+                            <input type="email" ng-model="user.newEmail" placeholder="Enter your email">
+                        </label>
+                        <label class="item item-input item-stacked-label">
+                            <span class="input-label">Password</span>
+                            <input type="{{inputType}}" ng-model="user.password" placeholder="For security reasons">
+                        </label>
+                        <li class="item item-checkbox" id="fntsz14px">
+                            <label class="checkbox">
+                                <input ng-model="isPasswordShown" ng-change="showHidePassword(isPasswordShown)" type="checkbox">
+                            </label>
+                            <span>Show Password</span>
+                        </li>
+                        <br>
+                        <button ng-click="saveEmail()" ng-disabled="!user.newEmail || !user.password" class="button button-block button-positive">
+                            Save
+                        </button>
+                    </div>
+                    <a ng-click="showChangePassword = !showChangePassword;
+                        showChangeEmail = false;" class="item" href="javascript:void(0)">
+                        Change Password
+                    </a>
+                    <div ng-show="showChangePassword" class="list list-inset">
+                        <label class="item item-input item-stacked-label">
+                            <span class="input-label">Old Password</span>
+                            <input type="{{inputType}}" ng-model="user.oldPassword" placeholder="Enter your Old Password">
+                        </label>
+                        <label class="item item-input item-stacked-label">
+                            <span class="input-label">New Password</span>
+                            <input ng-disabled="!user.oldPassword" type="{{inputType}}" ng-model="user.newPassword" placeholder="Enter your New Password">
+                        </label>
+                        <li class="item item-checkbox" id="fntsz14px">
+                            <label class="checkbox">
+                                <input ng-model="isPasswordShown" ng-change="showHidePassword(isPasswordShown)" type="checkbox">
+                            </label>
+                            <span>Show Password</span>
+                        </li>
+                        <br>
+                        <button ng-click="savePassword()" ng-disabled="(user.oldPassword !== user.newPassword) || (!user.oldPassword)" class="button button-block button-positive">
+                            Save
+                        </button>
+                    </div>
+
+                </div>
+            </ion-content>
+        </ion-tab>
+
+        <ion-tab title="About" icon-on="ion-ios7-clock" icon-off="ion-ios7-clock-outline">
+            <!-- Tab 2 content -->
+            <div class="list top47px">
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">First Name</span>
+                    <input ng-model="user.firstName" type="text" placeholder="John">
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Last Name</span>
+                    <input ng-model="user.lastName" type="text" placeholder="Suhr">
+                </label>
+                <br>
+                <button ng-click="saveUser()" ng-disabled="!user.firstName && !user.lastName" class="button button-block button-positive">
+                    Save
+                </button>
             </div>
-        </div>
-    </ion-content>
+        </ion-tab>
+
+        <ion-tab title="Settings" icon-on="ion-ios7-gear" icon-off="ion-ios7-gear-outline">
+            <!-- Tab 3 content -->
+            <p>Tab3</p>
+        </ion-tab>
+
+    </ion-tabs>
 </ion-view>
 

@@ -29,3 +29,15 @@
 .tabs-top > .tabs, .tabs.tabs-top {
     top: -4px;
 }
+
+.top49px{
+    top:49px !important;
+}
+
+.top47px{
+    top: 47px;
+}
+
+.top0px{
+    top:0px;
+}

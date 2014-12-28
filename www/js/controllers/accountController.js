@@ -4,6 +4,18 @@
  * and open the template in the editor.
  */
 
-angular.module('starter.accountController', []).controller('accountController', function ($scope, $rootScope, $ionicNavBarDelegate) {
-    $rootScope.getPreviousTitle = $ionicNavBarDelegate.getPreviousTitle();
+angular.module('starter.accountController', []).controller('accountController', function ($scope) {
+    $scope.user = {};
+    $scope.inputType = 'password';
+    $scope.showHidePassword = function (value) {
+        if (value) {
+            $scope.inputType = "text";
+        } else {
+            $scope.inputType = "password";
+        }
+    };
+
+    $scope.saveUser = function () {
+
+    };
 });

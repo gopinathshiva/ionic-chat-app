@@ -7,8 +7,9 @@
 
 angular.module('starter.friendsController', []).controller('friendsController', ['$scope', 'Auth', '$firebase', '$ionicLoading', 'friendService', 'userInfo', function ($scope, Auth, $firebase, $ionicLoading, friendService, userInfo) {
         $ionicLoading.show();
+        var userInfo = JSON.parse(localStorage.getItem("userData"));
         var homeRef = Auth.getRef;
-        var friendRef = $firebase(homeRef.child("friends/" + userInfo.fullUserDetail.uid));
+        var friendRef = $firebase(homeRef.child("friends/" + userInfo.uid));
         var friends = friendRef.$asArray();
         friends.$loaded().then(function () {
             var uids = [];

@@ -24,7 +24,7 @@ angular.module('starter', ['ionic', 'ngCookies', 'firebase', 'starter.slideBarCo
             });
             Auth.getAuth().then(function (data) {
                 $cookieStore.put('isLoggedIn', true);
-                if (!localStorage.getItem("userData")) {
+                if (!localStorage.getItem("userData") && data.provider === "password") {
                     userInfo.setUserDetail(data);
                 }
                 console.log("User " + data.uid + " is logged in with " + data.provider);

@@ -136,6 +136,9 @@ angular.module('starter.addFriendController', []).controller('addFriendControlle
         friendService.sendFriendRequest($scope.currentUID, user.uid).then(function (data) {
             if (data) {
                 $scope.searchFriends.splice(idx, 1);
+                if ($scope.searchFriends && $scope.searchFriends.length === 0) {
+                    $scope.modal.hide();
+                }
             }
             $ionicLoading.hide();
         }, function (err) {
