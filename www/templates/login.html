@@ -23,12 +23,11 @@
                     <input ng-keyup="$event.keyCode == 13 && !showSignUp && signUp()" name="password" type="{{inputType}}" ng-model="user.password" required>
                 </label>
                 <br>
-                <li class="item item-checkbox">
+                <li class="item item-checkbox" id="fntsz14px">
                     <label class="checkbox">
                         <input ng-model="isPasswordShown" ng-change="showHidePassword(isPasswordShown)" type="checkbox">
                     </label>
-                    <span ng-hide="isPasswordShown">Show Password</span>
-                    <span ng-show="isPasswordShown">Hide Password</span>
+                    <span>Show Password</span>
                 </li>
             </div>
             <div class="padding">

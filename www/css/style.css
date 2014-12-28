@@ -21,3 +21,11 @@
 .capitalize{
     text-transform: capitalize;
 }
+
+#fntsz14px{
+    font-size: 14px;
+}
+
+.tabs-top > .tabs, .tabs.tabs-top {
+    top: -4px;
+}

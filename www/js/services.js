@@ -82,7 +82,7 @@ var app = angular.module('starter.services', []);
 //
 //    return fns;
 //});
-app.factory("Auth", ["$firebaseAuth", function ($firebaseAuth) {
+app.factory("Auth", ["$firebaseAuth", "$q", function ($firebaseAuth, $q) {
         var ref = new Firebase("https://incandescent-inferno-8147.firebaseio.com/");
         var auth = {
             getRef: ref,
@@ -90,7 +90,36 @@ app.factory("Auth", ["$firebaseAuth", function ($firebaseAuth) {
                 return $firebaseAuth(ref);
             },
             getAuth: function () {
-                return $firebaseAuth(ref).$getAuth();
+                var defer = $q.defer();
+                var token = JSON.parse(localStorage.getItem("token"));
+                if (!token) {
+                    defer.reject();
+                } else {
+                    ref.authWithCustomToken(token.authToken, function (error, authData) {
+                        if (error) {
+                            defer.reject(error);
+                        } else {
+                            defer.resolve(authData);
+                        }
+                    });
+                }
+                return defer.promise;
+            },
+            getOAuth: function (provider) {
+                var defer = $q.defer();
+                var token = JSON.parse(localStorage.getItem("token"));
+                if (!token) {
+                    defer.reject();
+                } else {
+                    ref.authWithOAuthToken(provider, token.accessToken, function (error, authData) {
+                        if (error) {
+                            defer.reject(error);
+                        } else {
+                            defer.resolve(authData);
+                        }
+                    });
+                }
+                return defer.promise;
             },
             logout: function () {
                 return $firebaseAuth(ref).$unauth();
@@ -130,28 +159,36 @@ app.factory('loginService', ['$firebaseAuth', '$q', function ($firebaseAuth, $q)
         };
         return authLogin;
     }]);
-app.factory('userInfo', [function () {
+app.factory('userInfo', ["$q", function ($q) {
         var userInfo = {
             setUserDetail: function (detail) {
-                userInfo.fullUserDetail = detail;
+                var defer = $q.defer();
+                var authObj = {
+                    authToken: detail.token,
+                    accessToken: "",
+                    provider: ""
+                };
                 if (detail.provider.toLowerCase() === "google") {
                     userInfo.name = detail.google.displayName;
                     userInfo.email = detail.google.email;
                     userInfo.picture = detail.google.cachedUserProfile.picture;
                     userInfo.accessToken = detail.google.accessToken;
                     userInfo.uid = detail.uid;
-                    localStorage.setItem('accessToken', detail.google.accessToken);
+                    authObj.accessToken = detail.google.accessToken;
                 } else if (detail.provider.toLowerCase() === "facebook") {
                     userInfo.name = detail.facebook.displayName;
                     userInfo.email = detail.facebook.email;
                     userInfo.picture = detail.facebook.cachedUserProfile.picture.data.url;
                     userInfo.accessToken = detail.facebook.accessToken;
                     userInfo.uid = detail.uid;
-                    localStorage.setItem('accessToken', detail.facebook.accessToken);
+                    authObj.accessToken = detail.google.accessToken;
                 }
-                localStorage.setItem('provider', detail.provider);
+                authObj.provider = detail.provider;
+                localStorage.setItem('userData', JSON.stringify(userInfo));
+                localStorage.setItem('token', JSON.stringify(authObj));
                 userInfo.authToken = detail.token;
-                localStorage.setItem('authToken', detail.token);
+                defer.resolve(userInfo);
+                return defer.promise;
             }
         };
         return userInfo;
