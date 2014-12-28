@@ -1,37 +1,16 @@
 angular.module('starter.slideBarController', [])
 
-        .controller('slideBarController', function ($scope, Auth, $state, userInfo, $ionicLoading) {
-            if (!localStorage.getItem("userData")) {
-                $ionicLoading.show();
-                var provider = JSON.parse(localStorage.getItem("token"));
-                if (provider !== "password") {
-                    Auth.getOAuth(provider).then(function (data) {
-                        userInfo.setUserDetail(data).then(function (data) {
-                            updateSlideScreen();
-                        });
-                    }, function (error) {
-                        console.log("get OAuth service error" + JSON.stringify(error));
-                        $ionicLoading.hide();
-                    });
-                } else {
-                    userInfo.setUserDetail(data).then(function (data) {
-                        updateSlideScreen();
-                    });
+        .controller('slideBarController', function ($scope, Auth, $state, $cookieStore) {
 
-                }
-            } else {
-                updateSlideScreen();
-            }
 
-            function updateSlideScreen() {
-                var userInfo = JSON.parse(localStorage.getItem("userData"));
+            var userInfo = JSON.parse(localStorage.getItem("userData"));
+            if (userInfo) {
                 if (userInfo.picture) {
                     $scope.userImageUrl = userInfo.picture;
                     $scope.userName = userInfo.name;
                 } else {
                     $scope.userName = userInfo.email;
                 }
-                $ionicLoading.hide();
             }
 
             $scope.isLogin = false;
@@ -47,8 +26,9 @@ angular.module('starter.slideBarController', [])
 
             $scope.signOut = function () {
                 Auth.logout();
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('provider');
+                $cookieStore.put('isLoggedIn', false);
+                localStorage.removeItem('token');
+                localStorage.removeItem('userData');
                 $state.go('login');
             };
         });

@@ -5,9 +5,36 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'angular-jwt', 'firebase', 'starter.slideBarController', 'starter.loginController', 'starter.chatController', 'starter.profileController', 'starter.friendsController', 'starter.addFriendController', 'starter.accountController', 'starter.aboutController', 'starter.settingsController', 'starter.services', 'filters', 'appConstants'])
+angular.module('starter', ['ionic', 'ngCookies', 'firebase', 'starter.slideBarController', 'starter.loginController', 'starter.chatController', 'starter.profileController', 'starter.friendsController', 'starter.addFriendController', 'starter.accountController', 'starter.aboutController', 'starter.settingsController', 'starter.services', 'filters', 'appConstants'])
 
-        .run(function ($ionicPlatform, $state, $ionicLoading, $rootScope, Auth, userInfo) {
+        .run(function ($ionicPlatform, $ionicLoading, $location, $state, $rootScope, $cookieStore, Auth, userInfo) {
+            $ionicLoading.show();
+            $rootScope.$watch(function () {
+                return $cookieStore.get('isLoggedIn');
+            }, function (newValue) {
+                if (newValue) {
+                    if ($location.path() === "/login") {
+                        $state.go("dashboard.chat");
+                    } else {
+                        $location.path($location.path());
+                    }
+                } else {
+                    $location.path('login');
+                }
+            });
+            Auth.getAuth().then(function (data) {
+                $cookieStore.put('isLoggedIn', true);
+                if (!localStorage.getItem("userData")) {
+                    userInfo.setUserDetail(data);
+                }
+                console.log("User " + data.uid + " is logged in with " + data.provider);
+                $ionicLoading.hide();
+            }, function (error) {
+                $cookieStore.put('isLoggedIn', false);
+                console.log("app run token error" + JSON.stringify(error));
+                $ionicLoading.hide();
+                $location.path('login');
+            });
             $ionicPlatform.ready(function () {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
                 // for form inputs)
@@ -25,27 +52,28 @@ angular.module('starter', ['ionic', 'angular-jwt', 'firebase', 'starter.slideBar
 
                 }
 
-                $ionicLoading.show();
-                Auth.getAuth().then(function (data) {
-                    console.log("User " + data.uid + " is logged in with " + data.provider);
-                    $state.go('dashboard.chat');
-                }, function (error) {
-                    console.log("app run token error" + JSON.stringify(error));
-                    $ionicLoading.hide();
-                    $state.go('login');
-                });
-
-
             });
             $rootScope.$on('$stateChangeStart',
                     function (event, toState, toParams, fromState, fromParams) {
 
                         console.log('toState.name: ' + toState.name);
                         console.log('fromState.name: ' + fromState.name);
-                        if (toState.name === "login" && localStorage.getItem('token')) {
-                            $state.go('dashboard.chat');
-                        } else if (fromState.name === "login") {
-                            $state.go('login');
+
+                        if (!localStorage.getItem("userData") && localStorage.getItem("token")) {
+                            event.preventDefault();
+                            $ionicLoading.show();
+                            var provider = JSON.parse(localStorage.getItem("token")).provider;
+                            if (provider !== "password") {
+                                Auth.getOAuth(provider).then(function (data) {
+                                    userInfo.setUserDetail(data).then(function (data) {
+                                        $ionicLoading.hide();
+                                        $state.go(toState.name);
+                                    });
+                                }, function (error) {
+                                    console.log("get OAuth service error" + JSON.stringify(error));
+                                    $ionicLoading.hide();
+                                });
+                            }
                         }
                     });
         })

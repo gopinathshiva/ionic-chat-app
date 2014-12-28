@@ -168,22 +168,22 @@ app.factory('userInfo', ["$q", function ($q) {
                     accessToken: "",
                     provider: ""
                 };
+                userInfo.fullUserDetail = detail;
                 if (detail.provider.toLowerCase() === "google") {
                     userInfo.name = detail.google.displayName;
                     userInfo.email = detail.google.email;
                     userInfo.picture = detail.google.cachedUserProfile.picture;
                     userInfo.accessToken = detail.google.accessToken;
-                    userInfo.uid = detail.uid;
                     authObj.accessToken = detail.google.accessToken;
                 } else if (detail.provider.toLowerCase() === "facebook") {
                     userInfo.name = detail.facebook.displayName;
                     userInfo.email = detail.facebook.email;
                     userInfo.picture = detail.facebook.cachedUserProfile.picture.data.url;
                     userInfo.accessToken = detail.facebook.accessToken;
-                    userInfo.uid = detail.uid;
                     authObj.accessToken = detail.google.accessToken;
                 }
-                authObj.provider = detail.provider;
+                userInfo.uid = detail.uid || detail.auth.uid;
+                authObj.provider = detail.provider || detail.auth.provider;
                 localStorage.setItem('userData', JSON.stringify(userInfo));
                 localStorage.setItem('token', JSON.stringify(authObj));
                 userInfo.authToken = detail.token;

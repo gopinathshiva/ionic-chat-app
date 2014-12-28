@@ -5,7 +5,7 @@
  */
 
 
-angular.module('starter.loginController', []).controller('loginController', function ($scope, $state, $ionicLoading, $ionicPopup, Auth, loginService, userInfo) {
+angular.module('starter.loginController', []).controller('loginController', function ($scope, $state, $ionicLoading, $ionicPopup, $cookieStore, Auth, loginService, userInfo) {
     $scope.user = {};
     var userObj = {
         email: "",
@@ -48,6 +48,7 @@ angular.module('starter.loginController', []).controller('loginController', func
             userObj.uid = data.uid;
             createUser(data.uid, userObj);
             $ionicLoading.hide();
+            $cookieStore.put('isLoggedIn', true);
             $state.go('dashboard.chat');
         }, function () {
             $ionicLoading.hide();
@@ -98,6 +99,7 @@ angular.module('starter.loginController', []).controller('loginController', func
             }
             userInfo.setUserDetail(data);
             $ionicLoading.hide();
+            $cookieStore.put('isLoggedIn', true);
             $state.go('dashboard.chat');
         }, function (error) {
             handleError(error, "Login Failed!");

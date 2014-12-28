@@ -5,9 +5,9 @@
  */
 
 
-angular.module('starter.addFriendController', []).controller('addFriendController', function ($scope, $firebase, $ionicModal, $ionicPopup, Auth, friendService, $ionicLoading, userInfo) {
+angular.module('starter.addFriendController', []).controller('addFriendController', function ($scope, $firebase, $ionicModal, $ionicPopup, Auth, friendService, $ionicLoading) {
     $ionicLoading.show();
-
+    var userInfo = JSON.parse(localStorage.getItem("userData"));
     $scope.currentUID = userInfo.fullUserDetail.uid;
     var currentProvider = userInfo.fullUserDetail.provider;
     console.log("current uid:" + $scope.currentUID);
