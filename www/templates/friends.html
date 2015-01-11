@@ -1,12 +1,19 @@
 <ion-view title="Friends">
     <ion-content class="padding">
         <div class="" ng-repeat="friend in friends">
-            <a class="item item-avatar" ui-sref="dashboard.chat">
+            <a class="item item-avatar" ng-click="onClickFriends(friend)">
                 <img ng-src="{{ friend.picture || './img/default_user.png' }}">
-                <h2 class="capitalize" ng-bind="friend.name + ' - ' + friend.provider + ' user'"></h2>
+                <h2 class="capitalize" ng-if="friend.name" ng-bind="friend.name + ' - ' + friend.provider + ' user'"></h2>
+                <h2 ng-if="!friend.name" ng-bind="friend.email + ' - ' + friend.provider + ' user'"></h2>
                 <p ng-if="friend.status" ng-bind="friend.status"></p>
                 <p ng-if="!friend.status">Hello!!!</p>
             </a>
+        </div>
+        <div class="card margintop100px" ng-if="friends.length === 0">
+            <div class="item item-text-wrap">
+                <center>There is no friend in your friend list.<br>
+                    Give request to your friends by going into Add Friends Menu</center>
+            </div>
         </div>
     </ion-content>
 </ion-view>

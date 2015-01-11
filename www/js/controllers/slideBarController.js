@@ -2,7 +2,6 @@ angular.module('starter.slideBarController', [])
 
         .controller('slideBarController', function ($scope, Auth, $state, $cookieStore) {
 
-
             var userInfo = JSON.parse(localStorage.getItem("userData"));
             if (userInfo) {
                 if (userInfo.picture) {

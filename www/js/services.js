@@ -1,108 +1,17 @@
 var app = angular.module('starter.services', []);
-/**
- * A simple example service that returns some data.
- */
-//app.factory('loginService', function ($firebaseSimpleLogin, $q, $rootScope, $state) {
-//    var firebaseRef = new Firebase('https://incandescent-inferno-8147.firebaseio.com/');
-//    var auth = $firebaseSimpleLogin(firebaseRef, function (err, data) {
-//        alert(data);
-//    });
-//    function statusChange() {
-//        fns.getUser().then(function (user) {
-//            fns.user = user || null;
-//        });
-//    }
-//
-//    var fns = {
-//        user: {},
-//        provider: null,
-//        googleUser: {},
-//        fbUser: {},
-//        normalUser: {},
-//        getUser: function () {
-//            return auth.$getCurrentUser();
-//        },
-//        loginProvider: function (providerName, scope) {
-//            var defer = $q.defer();
-//            firebaseRef.authWithOAuthPopup(providerName, function (error, authData) {
-//                if (error) {
-//                    defer.reject(error);
-//                } else {
-//                    defer.resolve(authData);
-//                }
-//            }, {
-//                remember: "sessionOnly",
-//                scope: scope
-//            });
-//            return defer.promise;
-//        },
-//        login: function (email, pass) {
-//            return auth.$login('password', {
-//                email: email,
-//                password: pass,
-//                rememberMe: true
-//            });
-//        },
-//        logout: function () {
-//            auth.$logout();
-//            sessionStorage.removeItem('accessToken');
-//            sessionStorage.removeItem('provider');
-//            sessionStorage.removeItem('authToken');
-//            $state.go('login');
-//        },
-//        createAccount: function (email, pass, name) {
-//            return auth.$createUser(email, pass)
-//                    .then(function () {
-//                        // authenticate so we have permission to write to Firebase
-//                        return fns.login(email, pass);
-//                    })
-//                    .then(function (user) {
-//                        // store user data in Firebase after creating account
-//                        return user;
-////                                return createProfile(user.uid, email, name).then(function () {
-////                                    return user;
-////                                })
-//                    });
-//        },
-//        changePassword: function (email, oldpass, newpass) {
-//            return auth.$changePassword(email, oldpass, newpass);
-//        },
-//        changeEmail: function (password, newEmail) {
-//            return changeEmail(password, fns.user.email, newEmail, this);
-//        },
-//        removeUser: function (email, pass) {
-//            return auth.$removeUser(email, pass);
-//        }
-//    };
-//
-//    $rootScope.$on('$firebaseSimpleLogin:login', statusChange);
-//    $rootScope.$on('$firebaseSimpleLogin:logout', statusChange);
-//    $rootScope.$on('$firebaseSimpleLogin:error', statusChange);
-//    statusChange();
-//
-//    return fns;
-//});
 app.factory("Auth", ["$firebaseAuth", "$q", function ($firebaseAuth, $q) {
         var ref = new Firebase("https://incandescent-inferno-8147.firebaseio.com/");
         var auth = {
             getRef: ref,
-            getFirebaseRef: function () {
-                return $firebaseAuth(ref);
-            },
-            getAuth: function () {
+            getAuth: function (token) {
                 var defer = $q.defer();
-                var token = JSON.parse(localStorage.getItem("token"));
-                if (!token) {
-                    defer.reject();
-                } else {
-                    ref.authWithCustomToken(token.authToken, function (error, authData) {
-                        if (error) {
-                            defer.reject(error);
-                        } else {
-                            defer.resolve(authData);
-                        }
-                    });
-                }
+                ref.authWithCustomToken(token, function (error, authData) {
+                    if (error) {
+                        defer.reject(error);
+                    } else {
+                        defer.resolve(authData);
+                    }
+                });
                 return defer.promise;
             },
             getOAuth: function (provider) {
@@ -166,7 +75,8 @@ app.factory('userInfo', ["$q", function ($q) {
                 var authObj = {
                     authToken: detail.token,
                     accessToken: "",
-                    provider: ""
+                    provider: "",
+                    uid: ""
                 };
                 userInfo.fullUserDetail = detail;
                 if (detail.provider.toLowerCase() === "google") {
@@ -180,9 +90,12 @@ app.factory('userInfo', ["$q", function ($q) {
                     userInfo.email = detail.facebook.email;
                     userInfo.picture = detail.facebook.cachedUserProfile.picture.data.url;
                     userInfo.accessToken = detail.facebook.accessToken;
-                    authObj.accessToken = detail.google.accessToken;
+                    authObj.accessToken = detail.facebook.accessToken;
+                } else {
+                    userInfo.email = detail.password.email;
                 }
                 userInfo.uid = detail.uid || detail.auth.uid;
+                authObj.uid = detail.uid || detail.auth.uid;
                 authObj.provider = detail.provider || detail.auth.provider;
                 localStorage.setItem('userData', JSON.stringify(userInfo));
                 localStorage.setItem('token', JSON.stringify(authObj));
@@ -232,8 +145,12 @@ app.factory('friendService', function (Auth, $q, $firebase) {
         },
         getUserDetail: function (uids) {
             var defers = [];
-            for (var i = 0; i < uids.length; i++) {
-                defers[i] = getUser(uids[i]);
+            if (!angular.isArray(uids)) {
+                defers[0] = getUser(uids);
+            } else {
+                for (var i = 0; i < uids.length; i++) {
+                    defers[i] = getUser(uids[i]);
+                }
             }
             function getUser(uid) {
                 var defer = $q.defer();
@@ -247,12 +164,17 @@ app.factory('friendService', function (Auth, $q, $firebase) {
             return $q.all(defers);
         },
         addUser: function (currentID, requestedID) {
-            var defer = $q.defer();
+            var defer1 = $q.defer();
+            var defer2 = $q.defer();
             var getAddFriendRef = Auth.getRef.child("friends/" + currentID);
             var obj = {uid: requestedID};
             var addUser = getAddFriendRef.push(obj);
-            defer.resolve(addUser.key());
-            return defer.promise;
+            defer1.resolve(addUser.key());
+            getAddFriendRef = Auth.getRef.child("friends/" + requestedID);
+            obj = {uid: currentID};
+            addUser = getAddFriendRef.push(obj);
+            defer2.resolve(addUser.key());
+            return $q.all([defer1.promise, defer2.promise]);
         },
         removeUser: function (currentID, requestedID) {
             var defer = $q.defer();
@@ -266,6 +188,26 @@ app.factory('friendService', function (Auth, $q, $firebase) {
                 Auth.getRef.child("addFriends/" + currentID + "/" + pushId).remove(function (data) {
                     defer.resolve(data);
                 });
+            });
+            return defer.promise;
+        },
+        blockUser: function (currentID, requestedUser) {
+            var defer = $q.defer();
+            var getBlockUserRef = Auth.getRef.child("blockUser/" + currentID);
+            var obj = {uid: requestedUser.uid, email: requestedUser.email};
+            var blockedUser = getBlockUserRef.push(obj);
+            defer.resolve(blockedUser.key());
+            return defer.promise;
+        },
+        isUserBlocked: function (email) {
+            var defer = $q.defer();
+            var getBlockUserRef = Auth.getRef.child("blockUser");
+            getBlockUserRef.orderByChild('email').equalTo(email).once("value", function (snapshot) {
+                if (!snapshot.val()) {
+                    defer.resolve(false);
+                    return;
+                }
+                defer.resolve(true);
             });
             return defer.promise;
         }

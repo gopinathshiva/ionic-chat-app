@@ -11,7 +11,8 @@
         <div ng-repeat="addFriend in addFriends">
             <div class="item item-avatar">
                 <img ng-src="{{ addFriend.picture || './img/default_user.png' }}">
-                <h2 class="capitalize" ng-bind="addFriend.name + ' - ' + addFriend.provider + ' user'"></h2>
+                <h2 class="capitalize" ng-if="addFriend.name" ng-bind="addFriend.name + ' - ' + addFriend.provider + ' user'"></h2>
+                <h2 ng-if="!addFriend.name" ng-bind="addFriend.email + ' - ' + addFriend.provider + ' user'"></h2>
                 <p ng-bind="addFriend.status"></p>
                 <div>
                     <button ng-click="accept(addFriend, $index)" style="width: 48.5%;" class="button button-small button-positive">
@@ -21,6 +22,12 @@
                         Reject
                     </button>
                 </div>
+            </div>
+        </div>
+        <div class="card margintop100px" ng-if="addFriends.length === 0">
+            <div class="item item-text-wrap">
+                <center>There is no pending friend request.<br>
+                    Use search to keep adding friends.</center>
             </div>
         </div>
     </ion-content>
@@ -37,7 +44,8 @@
     <div ng-repeat="searchFriend in searchFriends">
     <a class="item item-avatar">
     <img ng-src="{{ searchFriend.picture || './img/default_user.png' }}">
-    <h2 ng-bind="searchFriend.name + ' - ' + searchFriend.provider"></h2>
+    <h2 class='capitalize' ng-if='searchFriend.name' ng-bind="searchFriend.name + ' - ' + searchFriend.provider"></h2>
+    <h2 ng-if='!searchFriend.name' ng-bind="searchFriend.email + ' - ' + searchFriend.provider"></h2>
     <p ng-bind="searchFriend.status"></p>
     <div ng-hide="currentUID===searchFriend.uid">
     <button ng-click="sendRequest(searchFriend,$index)" style="width: 48.5%;" class="button button-small button-assertive">

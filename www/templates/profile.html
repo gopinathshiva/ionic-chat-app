@@ -1,5 +1,17 @@
-<ion-view title="Profile">
-    <ion-content class="padding">
-        <h1>Account</h1>
-    </ion-content>
-</ion-view>
+<ion-tab title="About" icon-on="ion-ios7-clock" icon-off="ion-ios7-clock-outline">
+    <!-- Tab 2 content -->
+    <div class="list top47px">
+        <label class="item item-input item-stacked-label">
+            <span class="input-label">First Name</span>
+            <input ng-model="user.firstName" type="text" placeholder="John">
+        </label>
+        <label class="item item-input item-stacked-label">
+            <span class="input-label">Last Name</span>
+            <input ng-model="user.lastName" type="text" placeholder="Suhr">
+        </label>
+        <br>
+        <button ng-click="saveUser()" ng-disabled="!user.firstName && !user.lastName" class="button button-block button-positive">
+            Save
+        </button>
+    </div>
+</ion-tab>

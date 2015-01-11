@@ -9,7 +9,7 @@ angular.module('starter.addFriendController', []).controller('addFriendControlle
     $ionicLoading.show();
     var userInfo = JSON.parse(localStorage.getItem("userData"));
     $scope.currentUID = userInfo.fullUserDetail.uid;
-    var currentProvider = userInfo.fullUserDetail.provider;
+    var currentProvider = JSON.parse(localStorage.getItem("token")).provider;
     console.log("current uid:" + $scope.currentUID);
 
     var addFriends = [];
@@ -41,40 +41,6 @@ angular.module('starter.addFriendController', []).controller('addFriendControlle
         $ionicLoading.hide();
     });
 
-
-//    var homeRef = Auth.getRef;
-//    var addFriendRef = homeRef.child("addFriends");
-//
-//    addFriendRef = $firebase(addFriendRef);
-//    $scope.addFriends = addFriendRef.$asArray();
-//    $scope.addFriends.$loaded().then(function () {
-//        $ionicLoading.hide();
-//    }, function (err) {
-//        $ionicLoading.hide();
-//    });
-
-
-//    $scope.addFriends = [
-//        {
-//            userName: "Gopi",
-//            userEmail: "sgopinath31@gmail.com",
-//            userPicture: "./img/ionic.png",
-//            message: "hey"
-//        },
-//        {
-//            userName: "",
-//            userEmail: "",
-//            userPicture: "",
-//            message: ""
-//        },
-//        {
-//            userName: "",
-//            userEmail: "",
-//            userPicture: "./img/ionic.png",
-//            message: ""
-//        }
-//    ];
-
     $ionicModal.fromTemplateUrl('my-modal.html', {
         scope: $scope,
         animation: 'slide-in-up'
@@ -84,6 +50,7 @@ angular.module('starter.addFriendController', []).controller('addFriendControlle
 
     //Cleanup the modal when we're done with it!
     $scope.$on('$destroy', function () {
+        $scope.searchFriends = [];
         $scope.modal.remove();
     });
     $scope.search = function (user) {
@@ -93,6 +60,19 @@ angular.module('starter.addFriendController', []).controller('addFriendControlle
         $scope.searchedUser = user;
         $ionicLoading.show();
         $scope.modal.show();
+        friendService.isUserBlocked(user).then(function (data) {
+            if (!data) {
+                doSearchUser(user);
+            } else {
+                $ionicLoading.hide();
+            }
+        }, function (err) {
+            console.log("is user blocked service error" + JSON.stringify(err));
+            $ionicLoading.hide();
+        });
+    };
+
+    function doSearchUser(user) {
         friendService.searchUser(user).then(function (data) {
             $scope.searchFriends = data;
             $ionicLoading.hide();
@@ -100,7 +80,7 @@ angular.module('starter.addFriendController', []).controller('addFriendControlle
             console.log("search user service error:" + JSON.stringify(err));
             $ionicLoading.hide();
         });
-    };
+    }
 
     $scope.accept = function (user, idx) {
         $ionicLoading.show();
@@ -125,8 +105,6 @@ angular.module('starter.addFriendController', []).controller('addFriendControlle
         confirmPopup.then(function (res) {
             if (res) {
                 callRemoveUserFunction(user, idx);
-            } else {
-                console.log('You are not sure');
             }
         });
     };
@@ -134,13 +112,7 @@ angular.module('starter.addFriendController', []).controller('addFriendControlle
     $scope.sendRequest = function (user, idx) {
         $ionicLoading.show();
         friendService.sendFriendRequest($scope.currentUID, user.uid).then(function (data) {
-            if (data) {
-                $scope.searchFriends.splice(idx, 1);
-                if ($scope.searchFriends && $scope.searchFriends.length === 0) {
-                    $scope.modal.hide();
-                }
-            }
-            $ionicLoading.hide();
+            removeSearchedUser(user, idx);
         }, function (err) {
             console.log("send request service error:" + JSON.stringify(err));
             $ionicLoading.hide();
@@ -148,8 +120,26 @@ angular.module('starter.addFriendController', []).controller('addFriendControlle
         console.log("current user id:" + $scope.currentUID + "with provider:" + currentProvider + " is sending request to " + user.uid);
     };
 
-    $scope.blockUser = function (user, idx) {
+    function removeSearchedUser(user, idx) {
         $scope.searchFriends.splice(idx, 1);
-        console.log("current user id:" + $scope.currentUID + "with provider:" + currentProvider + " is blocking " + user.uid);
+        if ($scope.searchFriends && $scope.searchFriends.length === 0) {
+            $scope.modal.hide();
+        }
+        $ionicLoading.hide();
+    }
+
+    $scope.blockUser = function (user, idx) {
+        var confirmPopup = $ionicPopup.confirm({
+            title: 'Please Confirm once',
+            template: 'Are you sure you want to block this user?'
+        });
+        confirmPopup.then(function (res) {
+            if (res) {
+                $ionicLoading.show();
+                friendService.blockUser($scope.currentUID, user).then(function () {
+                    removeSearchedUser(user, idx);
+                });
+            }
+        });
     };
 });

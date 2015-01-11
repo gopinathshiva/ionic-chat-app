@@ -41,3 +41,70 @@
 .top0px{
     top:0px;
 }
+
+.margintop100px{
+    margin-top:100px
+}
+
+.marginBottom50px{
+    margin-bottom: 50px;
+}
+
+.senderChat{
+    clear:both;
+    float:right;
+    margin-left: 75px!important;
+    font-size: 85%;
+}
+
+.senderBoxShadow{
+    box-shadow:0 1px 2px #4a87ee;
+}
+
+.receiverChat{
+    clear:both;
+    float:left;
+    margin-right: 75px!important;
+    font-size: 85%;
+}
+
+.receiverBoxShadow{
+    box-shadow:0 1px 2px #66cc33;
+}
+
+.senderTimeStamp{
+    float:right;
+    box-shadow:none;
+}
+
+.receiverTimeStamp{
+    float:left;
+    box-shadow:none;
+}
+
+.clearBoxShadow{
+    box-shadow: none;
+}
+
+.chatFooter{
+    border:1px solid #4a87ee;
+}
+
+.paddingTop4px{
+    padding-top: 4px;
+}
+
+.msgSent{
+    color: red;
+    font-size: 12px;
+}
+
+.msgDelivered{
+    color:yellow;
+    font-size: 14px;
+}
+
+.msgRead{
+    color:green;
+    font-size: 16px;
+}

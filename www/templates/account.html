@@ -7,14 +7,14 @@ and open the template in the editor.
 <ion-view title="Account">
     <ion-tabs class="tabs-striped tabs-top tabs-background-positive tabs-color-light tabs-icon-only top49px">
 
-        <ion-tab title="Home" icon-on="ion-ios7-filing" icon-off="ion-ios7-filing-outline">
+        <ion-tab title="Home" icon-on="ion-ios7-filing" icon-off="ion-ios7-filing-outline" ng-if="provider === 'password'">
             <!-- Tab 1 content -->
             <ion-content class="padding top0px" >
                 <div class="list top47px" ng-init="showChangeEmail = false;
                         showChangePassword = false;">
 
                     <div class="item item-divider">
-                        Account
+                        Account{{provider}}
                     </div>
 
                     <a ng-click="showChangeEmail = !showChangeEmail;
@@ -61,7 +61,7 @@ and open the template in the editor.
                             <span>Show Password</span>
                         </li>
                         <br>
-                        <button ng-click="savePassword()" ng-disabled="(user.oldPassword !== user.newPassword) || (!user.oldPassword)" class="button button-block button-positive">
+                        <button ng-click="changePassword()" ng-disabled="(!user.newPassword) || (!user.oldPassword)" class="button button-block button-positive">
                             Save
                         </button>
                     </div>
